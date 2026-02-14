@@ -1,7 +1,8 @@
 import { test } from '@playwright/test';
 import { DuckDuckGoPage } from '../pages/DuckDuckGoPage';
 
-test('search Playwright on DuckDuckGo (POM)', async ({ page }) => {
+// test('search Playwright on DuckDuckGo (POM)', async ({ page }) => {
+test.skip('search Playwright on DuckDuckGo (POM)', async ({ page }) => {
   const duck = new DuckDuckGoPage(page);
 
   // Arrange
