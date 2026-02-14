@@ -1,5 +1,7 @@
 # Playwright Web Demo
 
+[![Playwright Tests](https://github.com/jessicazhong004/playwright-web-demo/actions/workflows/tests.yml/badge.svg)](https://github.com/jessicazhong004/playwright-web-demo/actions/workflows/tests.yml)
+
 Small Playwright + TypeScript automation project that I use as a focused demo, not just a playground.
 
 The goal of this repo is to show:
@@ -19,14 +21,15 @@ The goal of this repo is to show:
 
 ## What this project tests
 
-Right now the project covers a single, end-to-end flow on [DuckDuckGo](https://duckduckgo.com/):
+This repo contains two small demo flows:
 
-- Open DuckDuckGo
-- Search for `Playwright testing`
-- Verify the search results page URL contains the query
-- Verify that a result link to `https://playwright.dev` is visible
+- Deterministic CI demo (runs in GitHub Actions): `tests/search-demo.spec.ts`
+  - Uses a local HTML page via `page.setContent()` so CI is stable and reproducible
+  - Still follows the same POM style and assertions
 
-This is intentionally small but realistic: it hits a real website, uses a Page Object, and can be extended with more flows later.
+- External smoke demo (local/manual): `tests/search-duckduckgo.spec.ts`
+  - Hits a real public website (DuckDuckGo)
+  - Skipped in CI because third-party search results can be flaky (rate limits / A-B changes / regional differences)
 
 ---
 
@@ -34,31 +37,35 @@ This is intentionally small but realistic: it hits a real website, uses a Page O
 ```markdown
 ```text
 playwright-web-demo
-├─ playwright.config.ts      # Playwright runner configuration
+├─ playwright.config.ts
 ├─ tests/
-│  └─ search-duckduckgo.spec.ts  # End-to-end search flow using POM
+│  ├─ search-demo.spec.ts
+│  └─ search-duckduckgo.spec.ts
 └─ pages/
-   └─ DuckDuckGoPage.ts      # Page Object for the DuckDuckGo search page
+   ├─ SearchDemoPage.ts
+   └─ DuckDuckGoPage.ts
 ```
 
-- `tests/` contains high-level test scenarios written in business language
-- `pages/` contains Page Object classes that hide locators and low-level UI operations
+- `tests/` ccontains high-level test scenarios
+- `pages/` contains Page Object classes (locators and low-level UI operations)
 
 ---
 
 ## How to run the tests
 1. Install dependencies:
-``` bash
-
+```bash
 npm install
 npx playwright install
 ```
-2. Run the DuckDuckGo test in headless mode:
+2. Run the deterministic demo test:
+```bash
+npx playwright test tests/search-demo.spec.ts
+```
+3. Run the DuckDuckGo test (local/manual):
 ``` bash
-
 npx playwright test tests/search-duckduckgo.spec.ts
 ```
-3. Run it with a visible browser (useful for debugging and demos):
+4. Run it with a visible browser (useful for debugging and demos):
 ``` bash
 
 npx playwright test tests/search-duckduckgo.spec.ts --headed
@@ -84,11 +91,10 @@ npx playwright test
 
   The test reads like a short story:
   ``` ts
-  await duck.goto();
-  await duck.expectSearchInputVisible();
-  await duck.search('Playwright testing');
-  await duck.expectOnResultsPageWithQuery('Playwright testing');
-  await duck.expectResultLinkVisible('https://playwright.dev');
+  await demo.goto();
+  await demo.expectSearchInputVisible();
+  await demo.search('playwright');
+  await demo.expectAtLeastOneVisibleResult();
   ```
   
   This makes it easy to:
