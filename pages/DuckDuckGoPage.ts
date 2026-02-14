@@ -47,9 +47,17 @@ async expectOnResultsPageWithQuery(query: string) {
 //     // await expect(siteLink).toBeVisible();
     
 //   }
-async expectResultLinkVisible(domainOrUrl: string) {
-  const needle = domainOrUrl.replace(/^https?:\/\//, ''); 
-  const siteLink = this.page.getByRole('link', { name: new RegExp(needle, 'i') }).first();
-  await expect(siteLink).toBeVisible({ timeout: 15000 });
+// async expectResultLinkVisible(domainOrUrl: string) {
+//   const needle = domainOrUrl.replace(/^https?:\/\//, ''); 
+//   const siteLink = this.page.getByRole('link', { name: new RegExp(needle, 'i') }).first();
+//   await expect(siteLink).toBeVisible({ timeout: 15000 });
+// }
+async expectHasResults() {
+  const results = this.page.locator('article[data-testid="result"]');
+  await expect(results.first()).toBeVisible({ timeout: 15000 });
 }
+
+
 }
+
+

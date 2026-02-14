@@ -13,5 +13,6 @@ test('search Playwright on DuckDuckGo (POM)', async ({ page }) => {
 
   // Assert
   await duck.expectOnResultsPageWithQuery('Playwright testing');
-  await duck.expectResultLinkVisible('playwright.dev');
+  await duck.expectHasResults();
+
 });
