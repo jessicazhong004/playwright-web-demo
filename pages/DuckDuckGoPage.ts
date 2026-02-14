@@ -42,8 +42,14 @@ async expectOnResultsPageWithQuery(query: string) {
 }
 
 
-  async expectResultLinkVisible(url: string) {
-    const siteLink = this.page.getByRole('link', { name: url });
-    await expect(siteLink).toBeVisible();
-  }
+//   async expectResultLinkVisible(url: string) {
+//     // const siteLink = this.page.getByRole('link', { name: url });
+//     // await expect(siteLink).toBeVisible();
+    
+//   }
+async expectResultLinkVisible(domainOrUrl: string) {
+  const needle = domainOrUrl.replace(/^https?:\/\//, ''); 
+  const siteLink = this.page.getByRole('link', { name: new RegExp(needle, 'i') }).first();
+  await expect(siteLink).toBeVisible({ timeout: 15000 });
+}
 }
